@@ -9,12 +9,29 @@
   /* sparkle */
 .sparkle{
   position:absolute;
-  width:6px;
-  height:6px;
-  background:rgba(255,255,255,0.9);
+  width:8px;
+  height:8px;
+  background:radial-gradient(circle,
+    #ff4fa3 0%,
+    #ff80ab 40%,
+    rgba(255,128,171,0.3) 70%,
+    rgba(255,128,171,0) 100%
+  );
   border-radius:50%;
   pointer-events:none;
-  animation:spark 0.4s ease-out forwards;
+  filter: drop-shadow(0 0 6px rgba(255,79,163,0.8));
+  animation:spark 0.45s ease-out forwards;
+}
+
+@keyframes spark{
+  0%{
+    transform:scale(0.4);
+    opacity:1;
+  }
+  100%{
+    transform:scale(2.2);
+    opacity:0;
+  }
 }
 
 @keyframes spark{
@@ -281,7 +298,7 @@ function toggleDark(){
       rect.top + rect.height/2 + (Math.random()*16-8) + "px";
 
     document.body.appendChild(s);
-    setTimeout(()=>s.remove(),400);
+    setTimeout(()=>s.remove(),450);
   }
 }
 
@@ -291,3 +308,4 @@ loadQ();
 
 </body>
 </html>
+

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Just Something Simple</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#fce4ec;
+  --card:#ffffff;
+  --text:#000000;
+  --option:#f3f3f3;
+  --accent:#ff80ab;
+}
+
+body.dark{
+  --bg:#121212;
+  --card:#1e1e1e;
+  --text:#ffffff;
+  --option:#2c2c2c;
+}
+
+body{
+  margin:0;
+  height:100vh;
+  background:var(--bg);
+  font-family:Poppins,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:var(--text);
+  transition:0.3s;
+}
+
+.card{
+  background:var(--card);
+  width:90%;
+  max-width:380px;
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+h2{
+  margin-bottom:18px;
+}
+
+.option{
+  background:var(--option);
+  padding:12px;
+  margin:10px 0;
+  border-radius:12px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.option:hover{
+  background:var(--accent);
+  color:white;
+}
+
+button{
+  padding:12px 24px;
+  border:none;
+  border-radius:30px;
+  background:var(--accent);
+  color:white;
+  font-size:1rem;
+  cursor:pointer;
+}
+
+.toggle{
+  position:absolute;
+  top:20px;
+  right:20px;
+  cursor:pointer;
+  font-size:1.2rem;
+}
+
+.hidden{
+  display:none;
+}
+
+/* progress bar */
+.progress-wrap{
+  width:100%;
+  height:6px;
+  background:rgba(0,0,0,0.08);
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:12px;
+}
+
+body.dark .progress-wrap{
+  background:rgba(255,255,255,0.12);
+}
+
+#progress{
+  height:100%;
+  width:0%;
+  background:var(--accent);
+  border-radius:10px;
+  transition:width 0.4s ease;
+}
+
+/* counter */
+#counter{
+  font-size:0.9rem;
+  opacity:0.7;
+  margin-bottom:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="toggle" onclick="toggleDark()">🌙</div>
+
+<div class="card">
+
+  <!-- SCREEN 1 : QUESTIONS -->
+  <div id="screen1">
+    <div class="progress-wrap">
+      <div id="progress"></div>
+    </div>
+    <div id="counter"></div>
+    <h2 id="question"></h2>
+    <div id="options"></div>
+  </div>
+
+  <!-- SCREEN 2 : ABOUT -->
+  <div id="screen2" class="hidden">
+    <h2>Since you’re here 🙂</h2>
+    <p id="aboutText">Tap a button</p>
+
+    <button onclick="showAbout(0)">One thing I love</button><br><br>
+    <button onclick="showAbout(1)">One thing I’m bad at</button><br><br>
+    <button onclick="showAbout(2)">Something random</button><br><br>
+
+    <button onclick="nextScreen()">Continue</button>
+  </div>
+
+  <!-- SCREEN 3 : EXIT -->
+  <div id="screen3" class="hidden">
+    <h2>That’s it 🙂</h2>
+    <p>Just wanted to build something simple.</p>
+    <p>Hope you had a nice moment ✨</p>
+  </div>
+
+</div>
+
+<script>
+/* QUESTIONS */
+let questions = [
+  { q:"Coffee ☕ or Chai 🍵 ?", o:["Coffee","Chai"] },
+  { q:"Mountains 🏔️ or Beach 🌊 ?", o:["Mountains","Beach"] },
+  { q:"Late night 🌙 or Early morning ☀️ ?", o:["Late night","Early morning"] }
+];
+
+// randomize order
+questions = questions.sort(()=>Math.random()-0.5);
+
+let index = 0;
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const counterEl = document.getElementById("counter");
+const progressEl = document.getElementById("progress");
+
+function loadQuestion(){
+  counterEl.innerText = `${index + 1} / ${questions.length}`;
+  progressEl.style.width = ((index + 1) / questions.length) * 100 + "%";
+
+  questionEl.innerText = questions[index].q;
+  optionsEl.innerHTML = "";
+
+  questions[index].o.forEach(opt=>{
+    const div = document.createElement("div");
+    div.className = "option";
+    div.innerText = opt;
+
+    div.onclick = () => {
+      if (navigator.vibrate) navigator.vibrate(20); // haptic
+      nextQuestion();
+    };
+
+    optionsEl.appendChild(div);
+  });
+}
+
+function nextQuestion(){
+  index++;
+  if(index < questions.length){
+    loadQuestion();
+  }else{
+    document.getElementById("screen1").classList.add("hidden");
+    document.getElementById("screen2").classList.remove("hidden");
+  }
+}
+
+/* ABOUT ME */
+const aboutLines = [
+  "I love calm late nights and deep conversations.",
+  "I overthink sometimes, still learning to chill 😅",
+  "I prefer building things instead of explaining them."
+];
+
+function showAbout(i){
+  document.getElementById("aboutText").innerText = aboutLines[i];
+}
+
+/* FINAL */
+function nextScreen(){
+  document.getElementById("screen2").classList.add("hidden");
+  document.getElementById("screen3").classList.remove("hidden");
+}
+
+/* DARK MODE */
+function toggleDark(){
+  document.body.classList.toggle("dark");
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
